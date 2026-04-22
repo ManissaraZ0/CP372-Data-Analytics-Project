@@ -72,7 +72,84 @@ project-root/
 # prompt that is used for generating data
 
 # Data Dictionary 
+### TABLE 1: fact_bookings
 
+- จำนวนแถวข้อมูล: **9978**
+- จำนวนแอททริบิวต์: **10**
+
+| Attribute | คำอธิบาย | Data Type | ช่วงค่าที่ถูกต้อง / ตัวอย่าง |
+|----------|----------|----------|-----------------------------|
+| booking_id | รหัสอ้างอิงการจอง (Primary Key) | Ordinal | BK00001, BK09985 |
+| booking_date | วันที่ทำการบันทึกการจอง | Interval (Date) | 8/1/2025 |
+| check_in_date | วันที่ลูกค้าเข้าพัก | Interval (Date) | 1/6/2025 |
+| check_out_date | วันที่ลูกค้าออกจากที่พัก | Interval (Date) | 9/1/2025 |
+| channel_id | รหัสช่องทางการจอง (Foreign Key) | Nominal | CH_01, CH_02, CH_03 |
+| rate_code_id | รหัสประเภทเรต/โปรโมชั่น (Foreign Key) | Nominal | RT_01, RT_02, RT_05 |
+| gross_room_revenue | รายได้ค่าห้องรวม (ก่อนหักค่าคอมมิชชัน) | Ratio (Continuous) | 0 – ∞ (เช่น 1066.4) |
+| commission_amount | จำนวนค่านายหน้าหรือค่าธรรมเนียมช่องทาง | Ratio (Continuous) | 0 – ∞ (เช่น 213.28) |
+| net_room_revenue | รายได้ค่าห้องสุทธิ (Gross - Commission) | Ratio (Continuous) | 0 – ∞ (เช่น 853.12) |
+| status | สถานะของการจอง | Nominal | Confirmed, Checked-Out, Cancelled |
+
+### TABLE 2: dim_room_inventory
+- จำนวนแถวข้อมูล: **365** 
+- จำนวนแอตทริบิวต์: **4**  
+
+| Attribute                   | คำอธิบาย                                          | Data Type         | ช่วงค่าที่ถูกต้อง / ตัวอย่าง        |
+|---------------------------|--------------------------------------------------|-------------------|------------------------------------|
+| date                      | วันที่บันทึกข้อมูล (Primary Key)                  | Interval (Date)   | 8/1/2025                           |
+| total_capacity            | จำนวนห้องทั้งหมดในโรงแรม                          | Ratio (Discrete)  | 120                                |
+| rooms_out_of_order        | จำนวนห้องที่ปิดปรับปรุง/ไม่พร้อมใช้งาน           | Ratio (Discrete)  | 0 – 120 (เช่น 2, 5)                |
+| rooms_available_for_sale  | จำนวนห้องที่ว่างและสามารถขายได้จริง               | Ratio (Discrete)  | 0 – 120 (เช่น 118, 120)            |
+
+
+### TABLE 3: dim_channels
+- จำนวนแถวข้อมูล: **7**
+- จำนวนแอตทริบิวต์: **6** 
+
+| Attribute                  | คำอธิบาย                                  | Data Type            | ช่วงค่าที่ถูกต้อง / ตัวอย่าง                |
+|---------------------------|--------------------------------------------|----------------------|----------------------------------------------|
+| channel_id               | รหัสช่องทางการจอง (Primary Key)           | Nominal              | CH_01, CH_02                                 |
+| channel_name             | ชื่อเรียกช่องทางการจอง                    | Nominal              | Direct Website, Booking.com, Agoda          |
+| channel_type             | ประเภทของช่องทาง                          | Nominal              | Direct, OTA, Wholesale, Corporate           |
+| commission_model         | รูปแบบการคิดค่าคอมมิชชั่น                 | Nominal              | Percentage, Flat Fee                        |
+| default_commission_rate  | อัตราค่าคอมมิชชั่นมาตรฐาน                | Ratio (Continuous)   | 0.0 – 1.0 (เช่น 0.15 สำหรับ 15%)            |
+| contract_owner           | หน่วยงานที่ดูแลรับผิดชอบสัญญา            | Nominal              | Marketing Dept, Revenue Dept, Sales Dept    |
+### TABLE 4: fact_marketing_spend
+- จำนวนแถวข้อมูล: **600**  
+- จำนวนแอตทริบิวต์: **6**  
+
+| Attribute     | คำอธิบาย                                   | Data Type            | ช่วงค่าที่ถูกต้อง / ตัวอย่าง                |
+|---------------|---------------------------------------------|----------------------|----------------------------------------------|
+| spend_id      | รหัสรายการค่าใช้จ่าย (Primary Key)         | Nominal              | SP0001, SP0002                               |
+| spend_date    | วันที่ใช้จ่าย                               | Date                 | 2025-01-01                                   |
+| channel_id    | รหัสช่องทางการตลาด (Foreign Key)           | Nominal              | CH_01, CH_02                                 |
+| platform      | แพลตฟอร์มที่ใช้โฆษณา                       | Nominal              | Google Ads, Facebook Ads, Instagram Ads      |
+| cost_amount   | จำนวนเงินที่ใช้                             | Ratio (Continuous)   | 202.62, 777.14                               |
+| clicks        | จำนวนคลิก                                  | Ratio (Discrete)     | 239, 974                                     |
+
+
+### TABLE 5: dim_rate_codes
+- จำนวนแถวข้อมูล: **6**  
+- จำนวนแอตทริบิวต์: **3**  
+
+| Attribute           | คำอธิบาย                                   | Data Type          | ช่วงค่าที่ถูกต้อง / ตัวอย่าง                |
+|---------------------|---------------------------------------------|--------------------|----------------------------------------------|
+| rate_code_id        | รหัสประเภทเรทราคา (Primary Key)             | Nominal            | RT_01, RT_02                                 |
+| rate_name           | ชื่อเรทราคา                                | Nominal            | Rack Rate, Non-Refundable, Corporate Rate    |
+| is_commissionable   | ระบุว่ามีค่าคอมมิชชั่นหรือไม่               | Binary (Boolean)   | True, False                                  |
+
+
+### TABLE 6: dim_calendar
+- จำนวนแถวข้อมูล: **365**  
+- จำนวนแอตทริบิวต์: **5**  
+
+| Attribute     | คำอธิบาย                          | Data Type          | ช่วงค่าที่ถูกต้อง / ตัวอย่าง        |
+|---------------|----------------------------------|--------------------|--------------------------------------|
+| date_key      | วันที่ (Primary Key)             | Date               | 2025-01-01                           |
+| date_name     | ชื่อวัน                           | Nominal            | Monday, Tuesday                      |
+| is_weekend    | เป็นวันหยุดสุดสัปดาห์หรือไม่     | Binary (Boolean)   | True, False                          |
+| is_holiday    | เป็นวันหยุดนักขัตฤกษ์หรือไม่     | Binary (Boolean)   | True, False                          |
+| holiday       | ฤดูกาลท่องเที่ยว                | Nominal            | High Season, Low Season              |
 # Methodology
 
 # Findings (Insights)
