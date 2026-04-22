@@ -70,6 +70,233 @@ project-root/
 
 
 # prompt that is used for generating data
+```
+Generate a clean, realistic synthetic hotel dataset for business intelligence analysis in CSV format (separate CSV file for each table).
+
+Hotel Profile:
+“The Azure Stay” – a mid-sized independent hotel with 120 rooms and there were profitability is stagnant issues.
+
+-----------------------------------
+BUSINESS SCENARIO
+-----------------------------------
+High Distribution Costs (Channel Profitability)
+
+The hotel generates strong booking volume, primarily from OTA channels (e.g., Booking.com, Expedia), but pays high commissions. The objective is to analyze true profitability by channel, not just booking volume.
+
+-----------------------------------
+DATA REQUIREMENTS
+-----------------------------------
+- Clean and analysis-ready data
+- No null values unless logically required
+- No duplicate primary keys
+- Valid foreign key relationships
+- Realistic dates and values
+- Consistent naming conventions
+- Logical revenue calculations
+- Suitable for SQL / Power BI / Tableau
+
+Date Range:
+2025-01-01 to 2025-12-31
+
+-----------------------------------
+BUSINESS CONSTRAINTS (HARD RULES)
+-----------------------------------
+- Daily occupied rooms must NOT exceed rooms_available_for_sale
+- Overbooking is allowed ONLY:
+  - During High Season or Holidays
+  - Maximum 105% of available rooms
+  - Occurs on less than 3% of total days
+- Booking date must be before check-in date
+- Length of stay must be between 1–7 nights
+- Cancelled bookings must have zero revenue
+- Net revenue = Gross revenue – Commission
+
+-----------------------------------
+GENERATION LOGIC (CRITICAL)
+-----------------------------------
+The dataset MUST be generated using day-level inventory control.
+
+1. For each date:
+   - Calculate rooms_available_for_sale from inventory
+   - Assign a target occupancy based on season and weekday/weekend
+
+2. Generate bookings from occupancy:
+   - Each booking represents 1 room per night
+   - Each booking spans from check-in to check-out (multi-night stays)
+
+3. Capacity enforcement:
+   - For every date, total occupied rooms (from all active bookings)
+     MUST NOT exceed rooms_available_for_sale (except allowed overbooking cases)
+
+4. Overbooking:
+   - Only in High Season or holidays
+   - Max 105% occupancy
+   - Rare occurrence (<3% of days)
+
+5. DO NOT generate bookings independently.
+   Bookings must be derived from daily occupancy allocation.
+
+-----------------------------------
+SEASON & DEMAND STRUCTURE
+-----------------------------------
+Season Mapping:
+- Jan–Apr: High Season
+- May–Jun: Low Season
+- Jul–Oct: Shoulder Season
+- Nov–Dec: High Season
+
+Occupancy Targets:
+- Low Season: 55%–70%
+- Shoulder Season: 70%–85%
+- High Season: 85%–98%
+
+Demand Behavior:
+- Weekends have higher occupancy than weekdays
+- December has peak demand (highest occupancy)
+- Corporate/GDS perform stronger on weekdays
+
+-----------------------------------
+PRICING & REVENUE LOGIC
+-----------------------------------
+ADR Guidelines (per night):
+- High Season: 120–220 USD
+- Shoulder Season: 90–160 USD
+- Low Season: 70–120 USD
+
+Rate Behavior:
+- Corporate Flat Rate: lower but stable ADR (80–110 USD)
+- Seasonal Promo: 10–25% discount from base rate
+- Direct channels tend to have higher net ADR
+
+Commission Rules:
+- Apply commission only if rate is commissionable
+- Commission = gross_room_revenue × channel commission rate
+
+-----------------------------------
+CHANNEL PERFORMANCE LOGIC
+-----------------------------------
+- OTA channels:
+  - Highest booking volume
+  - High commission → lower net profitability
+- Direct Website:
+  - Lower booking volume
+  - Lowest commission → highest net profitability
+- Corporate / GDS:
+  - Moderate volume
+  - Stable revenue (especially weekdays)
+- Walk-in:
+  - Low volume, no commission
+
+-----------------------------------
+BOOKING STATUS DISTRIBUTION
+-----------------------------------
+- Checked-Out: 70–80%
+- Confirmed: 15–25%
+- Cancelled: 5–10%
+
+-----------------------------------
+TABLE STRUCTURE
+-----------------------------------
+
+TABLE: fact_bookings
+booking_id (PK)
+booking_date
+check_in_date
+check_out_date
+channel_id (FK)
+rate_code_id (FK)
+gross_room_revenue
+commission_amount
+net_room_revenue
+status
+
+Rules:
+- net_room_revenue = gross_room_revenue - commission_amount
+- Cancelled bookings should have zero revenue
+- Checked-Out and Confirmed should have normal revenue
+- Length of stay between 1 to 7 nights
+- Booking date should occur before check-in date
+
+-----------------------------------
+
+TABLE: dim_room_inventory
+date (PK)
+total_capacity (fixed = 120)
+rooms_out_of_order (0–8)
+rooms_available_for_sale = total_capacity - rooms_out_of_order
+
+Rules:
+- Hotel total capacity = 120 rooms
+- rooms_out_of_order should vary between 0 to 8
+- rooms_available_for_sale = total_capacity - rooms_out_of_order
+
+-----------------------------------
+
+TABLE: dim_channels
+channel_id (PK)
+channel_name
+channel_type
+commission_model
+default_commission_rate
+contract_owner
+
+Suggested Values:
+CH_01 Direct Website | Direct | Percentage | 0.03
+CH_02 Booking.com | OTA | Percentage | 0.18
+CH_03 Expedia | OTA | Percentage | 0.20
+CH_04 Agoda | OTA | Percentage | 0.17
+CH_05 Walk-in | Direct | Flat Fee | 0
+CH_06 Corporate Agent | Wholesale | Percentage | 0.10
+CH_07 GDS | Corporate | Percentage | 0.12
+
+-----------------------------------
+
+TABLE: dim_rate_codes
+rate_code_id (PK)
+rate_name
+is_commissionable
+
+Suggested Values:
+RT_01 Rack Rate | True
+RT_02 Non-Refundable | True
+RT_03 Seasonal Promo | True
+RT_04 Corporate Flat Rate | False
+RT_05 AAA Discount | True
+RT_06 Member Direct Rate | False
+
+-----------------------------------
+
+TABLE: fact_marketing_spend
+spend_id (PK)
+spend_date
+channel_id (FK)
+platform
+cost_amount
+clicks
+
+Rules:
+- Primarily for Direct Website (CH_01)
+- Platforms: Google Ads, Facebook Ads, Instagram Ads, Meta Search
+- Cost: 50–1000 USD
+- Clicks: 20–1000
+
+-----------------------------------
+
+TABLE: dim_calendar
+date_key (PK)
+day_name
+is_weekend
+is_holiday
+season
+
+-----------------------------------
+OUTPUT FORMAT
+-----------------------------------
+Provide:
+1. Separate CSV content for each table
+2. Data dictionary (column definitions)
+3. Summary of business patterns reflected in the dataset
+```
 
 # Data Dictionary 
 ### TABLE 1: fact_bookings
