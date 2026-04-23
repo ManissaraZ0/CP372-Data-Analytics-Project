@@ -379,6 +379,85 @@ Provide:
 | holiday       | ฤดูกาลท่องเที่ยว                | Nominal            | High Season, Low Season              |
 # Methodology
 
+## Measures & Dimensions
+สร้าง Calculated Fields สำหรับ Measures
+ * ADR (Average Daily Rate) 
+
+Total Gross Room Revenue / Number of Rooms Sold
+  
+  สูตรสำหรับ Tableau Calculated Fields:
+```
+SUM(
+ IF [Status] IN ("Confirmed","Checked-Out")
+ THEN [Gross Room Revenue]
+ END
+)
+/
+COUNT(
+ IF [Status] IN ("Confirmed","Checked-Out")
+ THEN [Date Key]
+ END
+)
+```
+ใช้ COUNT date key เพราะใช้นับเป็นจำนวนห้องที่ขายได้แทน
+
+* OCC (Occupancy) 
+(Number of Rooms Sold / Total Rooms Available) * 100
+สูตรสำหรับ Tableau Calculated Fields:
+```
+COUNT(
+ IF [Status] IN ("Confirmed","Checked-Out")
+ THEN [Booking Id]
+ END
+)
+/ SUM({ FIXED [Date Key] : MAX([Rooms Available For Sale]) })
+```
+ใช้ FIXED ต่อ 1 วัน (Date Key) ห้องทั้งหมดต้องนับแค่ครั้งเดียว และเอาค่า MAX ที่มากที่สุด ซึ่งจริง ๆ ทุก row เท่ากันอยู่แล้ว
+ใช้ FIXED เพื่อ "ล็อก grain ของข้อมูลให้เป็นระดับวัน" แล้วใช้ MAX เพื่อดึง capacity ของวันนั้นมา 1 ค่า และ SUM เพื่อรวม capacity ทั้งช่วงเวลา
+
+* Net ADR
+Net Revenue / Rooms Sold
+สูตรสำหรับ Tableau Calculated Fields:
+```
+SUM(
+ IF [Status] IN ("Confirmed","Checked-Out")
+ THEN [Net Room Revenue]
+ END
+)
+/
+COUNT(
+ IF [Status] IN ("Confirmed","Checked-Out")
+ THEN [Date Key]
+ END
+)
+```
+
+
+* Commission Cost 
+Gross Revenue * Commission Rate
+ซึ่งมีอยู่แล้วในตาราง fact_booking ชื่อคอลัมน์ commission_amout
+
+* Net RevPAR 
+(Gross Revenue - Commission Cost) / Total Rooms Available
+สูตรสำหรับ Tableau Calculated Fields:
+```
+SUM(
+ IF [Status] IN ("Confirmed","Checked-Out")
+ THEN [Net Room Revenue]
+ END
+)
+/ SUM({ FIXED [Date Key] : MAX([Rooms Available For Sale]) })
+```
+
+* Cost of Acquisition (COA) % 
+(Total Commission + Marketing Spend) / Total Revenue 
+สูตรสำหรับ Tableau Calculated Fields
+( SUM([Commission Amount]) + SUM([Cost Amount]))
+/
+SUM([Net Room Revenue])
+```
+
+
 # Findings (Insights)
 
 # Recommendations
