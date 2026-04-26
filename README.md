@@ -1,56 +1,321 @@
 # Channel Profitability Optimization for Azure Stay 
 
+โครงการนี้เป็นส่วนหนึ่งของรายวิชา CP372 Data Analytics and Business Intelligence โดยมีวัตถุประสงค์เพื่อประยุกต์ใช้เครื่องมือและกระบวนการวิเคราะห์ข้อมูลเพื่อแก้ไขปัญหาทางธุรกิจจริง
+
+เนื้อหาหลักมุ่งเน้นไปที่การแก้ปัญหา ค่าใช้จ่ายในการจัดจำหน่ายสูง (High Distribution Costs) ของโรงแรม Azure Stay ซึ่งเกิดจากการพึ่งพาช่องทาง Online Travel Agency (OTA) มากเกินไป จนส่งผลกระทบต่อกำไรสุทธิ (Net Profit) แม้จะมีอัตราการจองสูงก็ตาม
+
 # Members
-1. นางสาวมณิสรา	แซ่จัน		  รหัสนิสิต 66102010151
+1. นางสาวมณิสรา	แซ่จัน รหัสนิสิต 66102010151
 2. นายฐิติวัฒน์	ฮาบสุวรรณ		รหัสนิสิต 66102010238
 3. นางสาวเอมี่หลุยส์	บราวน์		รหัสนิสิต 66102010572
 
 # Project Canvas
+แปะภาพ canvas
 
-# Background & Pain Points
- Azure Stay เป็นโรงแรมที่ขายห้องพักผ่านหลายช่องทาง เช่น Direct Web, Walk-in และ OTA (เช่น Booking.com, Expedia, GDS) เพื่อเพิ่มยอดจองและอัตราการเข้าพัก
-อย่างไรก็ตาม ปัญหาหลักของธุรกิจนี้คือ High Distribution Costs โดยเฉพาะจาก OTA ที่มีการเรียกเก็บ commission ในอัตราสูง แม้ว่าช่องทางเหล่านี้จะสร้าง booking volume ได้มาก แต่กลับทำให้รายได้สุทธิของโรงแรมลดลง
+# 1. Background & Pain Points
+Azure Stay เป็นโรงแรมขนาดกลางที่จำหน่ายห้องพักผ่านหลายช่องทาง ได้แก่ Direct Website, Walk-in และ OTA เช่น Booking.com, Expedia และ Agoda ซึ่งกำลังประสบปัญหาด้านกำไร
 
- ผลกระทบคือ โรงแรมอาจมีรายได้รวม (Gross Revenue) สูง แต่กำไรจริงต่ำ เนื่องจากต้นทุนในการได้มาซึ่งลูกค้า (Cost of Acquisition) สูงเกินไป ส่งผลให้ Net Revenue และ Net RevPAR ต่ำกว่าที่ควรจะเป็น เป็นผลจากการที่โรงแรมจัดสรรสัดส่วนของช่องทางการขาย (channel mix) ได้ไม่เหมาะสม โดยพึ่งพาช่องทางที่มีต้นทุนสูงมากเกินไป และไม่ได้ให้ความสำคัญกับช่องทางที่สร้างกำไรสุทธิได้ดีกว่า 
- 
- ดังนั้น การวัดผลจากแค่ยอดจองหรือรายได้รวมจึงไม่เพียงพอ โรงแรมจำเป็นต้องวิเคราะห์ Net Revenue และ profitability ของแต่ละช่องทาง เพื่อระบุว่า channel ใดสร้างกำไรได้จริง
+แม้ OTA จะช่วยเพิ่มยอดการจองและ occupancy แต่กลับก่อให้เกิด High Distribution Costs เนื่องจากมีค่าคอมมิชชันในอัตราสูง
 
+ผลกระทบทางธุรกิจ:
+* Gross Revenue สูง แต่ Net Revenue ต่ำ
+* Cost of Acquisition (COA) สูงเกินไป
+* Net RevPAR ต่ำกว่าศักยภาพที่ควรเป็น
+* Channel Mix ไม่มีประสิทธิภาพ
 
-# SMART Objectives
+ดังนั้น การวัดผลจากเพียงยอดจองไม่เพียงพอ จำเป็นต้องวิเคราะห์ profitability ในระดับ channel
+
+# 2. SMART Objectives
 เพิ่มรายได้สุทธิหลังหักค่าคอมมิชชั่นของโรงแรมให้ได้ 15% ภายใน 12 เดือน โดยการปรับสัดส่วนของช่องทางการจอง เพิ่มการจองโดยตรง และลดการพึ่งพาช่องทางการจองผ่านตัวแทนจำหน่ายออนไลน์ (OTA) ที่มีค่าคอมมิชชั่นสูง
 
+**SMART Breakdown:**
+* Specific: เพิ่มรายได้สุทธิหลังหักค่าคอมมิชชั่น
+* Measurable: +15%
+* Achievable: ผ่านการปรับสัดส่วนของช่องทางการจอง
+* Relevant: แก้ปัญหา profitability โดยตรง
+* Time-bound: 12 เดือน
 
-# Hypothesis & Method
+# 3. Hypothesis & Method
 
-## Hypothesis 1: ช่องทาง OTA สร้างยอดจองสูง แต่มี Net ADR ต่ำที่สุด
-**สมมติฐาน**
+## 3.1 Hypothesis
+### **Hypothesis 1**: ช่องทาง OTA (Online Travel Agency) สร้างปริมาณยอดจองสูง แต่มี Net ADR ต่ำที่สุด
+* **ประเด็นการพิสูจน์ (Key Questions)**:
+   * 1.1. Gross ADR ของช่องทาง OTA แตกต่างจาก Direct Website หรือไม่?
+   * 1.2. ช่องทาง OTA มี Net ADR ต่ำกว่า Direct Website ตั้งแต่ 15% ขึ้นไปจริงหรือไม่?
+   * 1.3. แม้ OTA จะมี Volume สูง แต่ค่า Net Revenue ต่อการจอง (Profit Efficiency) ต่ำกว่าช่องทาง Direct หรือไม่?
 
-ช่องทาง OTA เช่น Booking.com และ Expedia แม้จะสร้างจำนวนการจองสูง แต่จะมีค่า Net ADR ต่ำกว่าช่องทาง Direct Website อย่างน้อย 15% เนื่องจากมีอัตราค่าคอมมิชชันสูง แม้ว่า Gross ADR จะใกล้เคียงกัน
+### **Hypothesis 2**: ช่องทาง OTA ในวันธรรมดา (วันจันทร์–ศุกร์) จะมีค่า Net RevPAR ต่ำกว่าช่องทาง Walk-in และ Corporate มากกว่า 20% เนื่องจากต้องใช้ส่วนลดราคาและมีค่าคอมมิชชันสูง ในขณะที่ demand โดยรวมต่
+* **ประเด็นการพิสูจน์ (Key Questions)**:
+   * 2.1. OTA มี ADR ต่ำกว่าช่องทางอื่นในวันธรรมดาจริงหรือไม่?
+   * 2.2. OTA มี COA% สูงกว่าช่องทางอื่นหรือไม่?
+   * 2.3. Occupancy ของ OTA สามารถชดเชย Net RevPAR ที่ต่ำได้หรือไม่?
 
-## Hypothesis 2: OTA ทำกำไรต่ำในวันธรรมดา (Weekday)
-**สมมติฐาน**
+### **Hypothesis 3**: การจองที่ใช้ Promo Rate ผ่านช่องทาง OTA จะมีค่า Cost of Acquisition (COA%) สูงกว่าการจองกลุ่มอื่น เนื่องจากรายได้ต่อการจองลดลงจากโปรโมชั่น แต่ยังคงถูกหักค่าคอมมิชชันจาก OTA
+* **ประเด็นการพิสูจน์ (Key Questions)**:
+   * 3.1. OTA มีค่าเฉลี่ย COA% สูงกว่าช่องทางอื่นหรือไม่?
+   * 3.2. Commission Rate มีความสัมพันธ์กับ COA% หรือไม่?
+   * 3.3. Promo Rate ทำให้ COA% สูงขึ้นหรือไม่?
+ 
+### **Hypothesis 4**: โครงสร้างอัตราราคา Rate มีผลต่อ Net Revenue ของโรงแรม
+* **ประเด็นการพิสูจน์ (Key Questions)**:
+   * 4.1. Rate Code ที่มี Net RevPAR สูง จะสร้าง Net Revenue ได้ดีกว่า Rate อื่นหรือไม่?
+   * 4.2. Rate Code ที่มี Cancellation Rate ต่ำ จะมีคุณภาพ booking ดีกว่าหรือไม่?
+   * 4.3. Rate Code ที่มี Commission ต่ำ จะสร้าง margin ได้ดีกว่าหรือไม่?
+   * 4.4. Promotional Rate ช่วยเพิ่มยอดขายแต่ลด Net RevPAR หรือไม่?
 
-ช่องทาง OTA ในวันธรรมดา (วันจันทร์–พฤหัสบดี) จะมีค่า Net RevPAR ต่ำกว่าช่องทาง Walk-in และ Corporate มากกว่า 20% เนื่องจากต้องใช้ส่วนลดราคาและมีค่าคอมมิชชันสูง ในขณะที่ demand โดยรวมต่ำ
+## 3.2 Methodology
+### 3.2.1. Data Quality Assessment
+จากการตรวจสอบคุณภาพข้อมูลเพื่อประเมินความสมบูรณ์และความถูกต้องของชุดข้อมูลก่อนนำไปใช้ในการวิเคราะห์ มีผลการตรวจสอบดังนี้
+* ไม่พบค่าที่หายไป (Missing Values) ในทุกตารางข้อมูล
+* ไม่พบข้อมูลซ้ำ (Duplicate Records)
+* ได้ทำการตรวจสอบและปรับปรุงชนิดข้อมูลของแต่ละตัวแปร (Data Types) ให้เหมาะสมต่อการวิเคราะห์ 
 
-## Hypothesis 3: Promo Rate ผ่าน OTA มี COA% สูงผิดปกติ
-**สมมติฐาน**
+### 3.2.2. Data Preparation
+จัดการ Data Modeling และเตรียมความพร้อมข้อมูลบน Tableau เพื่อให้ข้อมูลพร้อมสำหรับวิเคราะห์ KPIs ของโรงแรม เราจำเป็นต้องปรับเปลี่ยนโครงสร้างข้อมูลจาก Booking-level ไปสู่ Daily Stay-level โดยแบ่งการทำงานออกเป็น 2 ส่วนดังนี้
 
-การจองที่ใช้ Promo Rate ผ่านช่องทาง OTA จะมีค่า Cost of Acquisition (COA%) สูงกว่าการจองกลุ่มอื่น เนื่องจากรายได้ต่อการจองลดลงจากโปรโมชั่น แต่ยังคงถูกหักค่าคอมมิชชันจาก OTA
+**1. การทำ Physical Join (ภายใน Logical Table: dim_calendar)**
+* จุดประสงค์: เพื่อสร้างมิติของข้อมูลรายวัน (Daily Grain) สำหรับคำนวณ Metrics
+* `dim_calendar` (Base Table): ใช้เป็นตารางหลักในการกระจายข้อมูล
+* `dim_room_inventory` (Left Join): เชื่อมด้วย `Date Key = Date` เพื่อระบุจำนวนห้องว่างรายวัน
+* `fact_bookings` (Left Join): ใช้เงื่อนไข Non-equi Join `(Check In Date <= Date Key < Check Out Date)` เพื่อทำ Data Densification (หรือการแปลงจาก Booking-level เป็น Daily Stay-level/Room-night) ช่วยให้ 1 การจองที่พักหลายวัน ถูกขยายออกเป็นแถวรายวันตามจำนวนคืนที่เข้าพักจริง
+* `dim_channels` & `dim_rate_codes` (Inner Join): เชื่อมด้วย `Channel Id` และ `Rate Code Id` เพื่อเพิ่มมิติการวิเคราะห์ (Context) ให้กับข้อมูลการจอง
+
+**2. การสร้าง Relationship (Logical Layer)**
+* จุดประสงค์: เพื่อเชื่อมโยงข้อมูลฝั่ง Marketing Spend โดยรักษาความถูกต้องของข้อมูลรายวัน
+* `fact_marketing_spend`: เชื่อมต่อกับ `dim_calendar` และ `dim_channels` ผ่าน Relationship แทนการทำ Physical Join
+* เหตุผล
+   * เพื่อหลีกเลี่ยง Data Duplication การทำ Join กับ fact_marketing_spend ในระดับ Physical Layer จะทำให้ค่า Metrics ในตาราง fact_bookings เกิดการซ้ำซ้อน (Fan-out) เมื่อมีการกระจายข้อมูลรายวัน (Daily Grain)
+   * เพื่อให้ Data Integrity การใช้ Relationship ช่วยให้ Tableau คำนวณค่า Aggregated Metrics (เช่น ผลรวมของ Marketing Spend หรือ Revenue) ได้อย่างถูกต้องตาม Context ของวันที่และช่องทาง โดยไม่ทำให้ตัวเลขในระดับ Stay-level เกิดการคำนวณที่ผิดพลาดหรือข้อมูลเพี้ยน
+
+### 3.2.3. การสร้าง Calculated Field สำหรับ Measures & Dimensions
+**1. Average Daily Rate (ADR)**
+   * ราคาขายเฉลี่ยต่อห้องที่ขายได้จริง ไม่รวมภาษีและค่าบริการอื่นๆ
+   * สูตร: `Total Gross Room Revenue / Number of Rooms Sold`
+   * คำอธิบาย: เป็นตัวชี้วัดประสิทธิภาพในการตั้งราคาห้องพัก โดยวัดจากรายได้ส่วนที่เป็นค่าห้องพักโดยตรง หารด้วยจำนวนคืนที่ขายได้ (Room Nights)
+   * สูตรสำหรับ Tableau Calculated Fields:
+```
+SUM(
+ IF [Status] IN ("Confirmed","Checked-Out") THEN [Gross Room Revenue]
+ ELSEIF [Status] = "Cancelled" AND [Rate Code Id] = "RT_02" THEN [Gross Room Revenue]
+ END
+)
+/
+COUNT( IF [Status] IN ("Confirmed","Checked-Out") THEN [Date Key] END )
+```
+
+**2. Occupancy Rate (OCC %)**
+   * สัดส่วนของห้องที่ถูกจองเทียบกับจำนวนห้องทั้งหมดที่มีให้บริการ
+   * สูตร: `(Number of Rooms Sold / Total Rooms Available) * 100`
+   * คำอธิบาย: วัดประสิทธิภาพการบริหารจัดการห้องพัก (Utilization Rate) โดยใช้ FIXED เพื่อล็อค Grain ของ Capacity ในระดับวัน เพื่อป้องกันการนับซ้ำเมื่อข้อมูลถูกขยาย (Densified) ในระดับรายวัน
+   * สูตรสำหรับ Tableau Calculated Fields:
+```
+COUNT(IF [Status] IN ("Confirmed","Checked-Out") THEN [Booking Id] END) /
+SUM({ FIXED [Date Key] : MAX([Rooms Available For Sale]) })
+```
+
+**3. Net ADR**
+   * ราคาขายเฉลี่ยต่อห้องหลังจากหักค่าใช้จ่ายทางการขาย (เช่น ค่าคอมมิชชั่น)
+   * สูตร: `Net Revenue / Number of Rooms Sold`
+   * คำอธิบาย: ช่วยให้ทราบราคาขายที่แท้จริงหลังจากหักต้นทุนการขาย (Acquisition Cost) เพื่อให้เห็นผลกำไรที่ได้รับจริงต่อการเข้าพัก 1 คืน
+   * สูตรสำหรับ Tableau Calculated Fields:
+```
+SUM(
+ IF [Status] IN ("Confirmed","Checked-Out") THEN [Net Room Revenue]
+
+ ELSEIF [Status] = "Cancelled"
+ AND [Rate Code Id] = "RT_02"
+ THEN [Net Room Revenue]
+ END
+)
+/
+COUNT(
+ IF [Status] IN ("Confirmed","Checked-Out") THEN [Date Key] END
+)
+```
+
+**4. Net Revenue per Available Room (Net RevPAR)**
+   * รายได้สุทธิที่เกิดขึ้นจริงต่อห้องพักทั้งหมดที่มีให้บริการ (รวมห้องที่ขายไม่ออกด้วย)
+   * สูตร: `(Gross Revenue - Commission Cost) / Total Rooms Available`
+   * คำอธิบาย: เป็น KPI ที่สำคัญที่สุดตัวหนึ่ง เพราะสะท้อนถึงทั้ง "ความสามารถในการขาย" (Occupancy) และ "ความสามารถในการทำกำไร" (Net Rate) ในคราวเดียว
+   * สูตรสำหรับ Tableau Calculated Fields:
+```
+SUM(
+ IF [Status] IN ("Confirmed","Checked-Out") THEN [Net Room Revenue]
+
+ ELSEIF [Status] = "Cancelled"
+ AND [Rate Code Id] = "RT_02"
+ THEN [Net Room Revenue]
+ END
+)
+/
+SUM({ FIXED [Date Key] : MAX([Rooms Available For Sale]) })
+```
+
+**5. Cost of Acquisition (COA %)**
+   * สัดส่วนต้นทุนที่ใช้ในการได้มาซึ่งการจองเทียบกับรายได้รวม
+   * สูตร: `(Total Commission + Marketing Spend) / Total Revenue`
+   * คำอธิบาย: วัดความคุ้มค่าของการตลาดและช่องทางการขาย หากค่านี้สูงเกินไปอาจหมายถึงการจ่ายค่าคอมมิชชั่นหรือใช้งบการตลาดสูงเกินกว่ารายได้ที่ได้รับ
+   * สูตรสำหรับ Tableau Calculated Fields:
+```
+(IFNULL(SUM([Commission Amount]), 0) + IFNULL(SUM([Cost Amount]), 0)) /
+SUM([Net Room Revenue])
+```
+
+**6. Cancellation Rate**
+   * อัตราการยกเลิกการจอง
+   * สูตร: `Total Cancelled Bookings / Total Bookings`
+   * คำอธิบาย: วัดความเสี่ยงหรือความไม่แน่นอนของการจอง (Booking Volatility) ยิ่งค่าสูงยิ่งส่งผลกระทบต่อการวางแผนบริหารจำนวนห้องว่าง (Inventory Management)
+   * สูตรสำหรับ Tableau Calculated Fields:
+```
+COUNTD(IF [Status] = "Cancelled" THEN [Booking Id] END) /
+COUNTD([Booking Id])
+```
+
+### 3.2.4. Hypothesis Testing & Analysis
+
+#### ขั้นตอนการพิสูจน์ Hypothesis 1: ช่องทาง OTA สร้างยอดจองสูง แต่มี Net ADR ต่ำที่สุด
+
+**1. Hypothesis Statement**
+
+ช่องทาง OTA เช่น Booking.com, Agoda และ Expedia สามารถสร้างจำนวนการจองได้สูงกว่าช่องทางอื่น แต่มีค่า Net ADR ต่ำกว่าช่องทาง Direct อย่างน้อย 15% เนื่องจาก OTA มีต้นทุนค่าคอมมิชชันสูง แม้ว่า Gross ADR หรือราคาขายก่อนหักต้นทุนอาจใกล้เคียงกับ Direct
+
+**2. Research Objective**
+
+วัตถุประสงค์ของสมมติฐานนี้คือ เพื่อวิเคราะห์ว่า OTA เป็นช่องทางที่สร้างยอดขายจำนวนมากจริงหรือไม่ และยอดขายที่เกิดขึ้นนั้นสามารถแปลงเป็นรายได้สุทธิต่อห้องได้ดีเท่ากับช่องทาง Direct หรือไม่
+กล่าวอีกแบบคือ ต้องการตรวจสอบว่า OTA เป็นช่องทางที่ดีในเชิง Volume Strategy แต่ด้อยกว่า Direct ในเชิง Profitability Efficiency หรือไม่
+
+**3. Sub-Hypotheses / Research Questions**
+* H1.1 OTA มี Gross ADR ใกล้เคียงกับ Direct หรือไม่ : เพื่อตรวจสอบว่าโรงแรมตั้งราคาขายบน OTA ต่ำกว่า Direct มากหรือไม่
+* H1.2 OTA มี Net ADR ต่ำกว่า Direct อย่างน้อย 15% หรือไม่ : เพื่อตรวจสอบผลกระทบจาก commission และต้นทุน acquisition
+* H1.3 OTA แม้มี booking volume สูง แต่ profit efficiency ต่ำกว่า Direct หรือไม่ : เพื่อตรวจสอบว่า OTA สร้างรายได้มากจากจำนวน booking หรือจากคุณภาพของ booking
+
+**4. Methodology**
+
+การวิเคราะห์ใช้ข้อมูลการจองโรงแรมแยกตาม Channel Type โดยเปรียบเทียบช่องทางหลัก ได้แก่
+* OTA
+* Direct
+* Corporate
+* Wholesale
+
+จากนั้นนำข้อมูลมาวิเคราะห์ใน 3 มิติหลัก ได้แก่
+1. Volume Performance ดูว่าช่องทางใดสร้างจำนวน booking สูงที่สุด
+2. Price Performance เปรียบเทียบ ADR และ Net ADR ของแต่ละช่องทาง
+3. Profit Efficiency วิเคราะห์ว่าแต่ละช่องทางสามารถเปลี่ยน booking ให้เป็นรายได้สุทธิได้ดีเพียงใด
+
+**5. Data Visualization**
+
+**Graph 1: Bubble Chart**
+* **ชื่อกราฟ:** Total Net Revenue vs Net ADR vs Number of Bookings by Channel
+* **การแสดงผล**
+   * X-axis = Number of Bookings
+   * Y-axis = Net ADR
+   * Bubble Size = Total Net Revenue
+   * Color = Channel Type
+* **เหตุผลที่เลือกใช้**
+Bubble Chart เหมาะสำหรับการวิเคราะห์ข้อมูลหลายมิติพร้อมกัน เพราะสามารถแสดงทั้งจำนวน booking, รายได้สุทธิต่อห้อง และรายได้สุทธิรวมในกราฟเดียว
+* **กราฟนี้ช่วยตอบคำถามว่า**
+   * ช่องทางใดมี volume สูงที่สุด
+   * ช่องทางใดมี Net ADR สูงที่สุด
+   * ช่องทางใดสร้างรายได้สุทธิรวมมากที่สุด
+   * OTA มี volume สูงแต่ Net ADR ต่ำจริงหรือไม่
+
+**Graph 2: Side-by-Side Bar Chart**
+* **ชื่อกราฟ:** ADR vs Net ADR by Channel
+* **การแสดงผล**
+   * Columns = Channel Type
+   * Rows = ADR และ Net ADR
+   * Color = Measure Name
+   * Label = ค่า ADR และ Net ADR
+* **เหตุผลที่เลือกใช้**
+Side-by-Side Bar Chart เหมาะสำหรับเปรียบเทียบ 2 metrics ภายในหมวดหมู่เดียวกัน ทำให้เห็นความต่างระหว่างรายได้ก่อนและหลังหักค่าคอมมิชชันได้ชัดเจน
+* **กราฟนี้ช่วยตอบว่า**
+   * ช่องทางใดถูกหักต้นทุนมากที่สุด
+   * ช่องทางใดรักษา Net ADR ได้ดีที่สุด
+   * OTA สูญเสียรายได้จาก commission มากกว่า Direct หรือไม่
 
 
-# logical folder structure
+**6. Hypothesis Testing Criteria**
+
+สมมติฐานนี้จะถือว่า Supported หากพบว่า
+1. OTA มีจำนวน booking สูงที่สุด
+2. OTA มี Gross ADR ใกล้เคียงกับ Direct
+3. OTA มี Net ADR ต่ำกว่า Direct อย่างน้อย 15%
+4. OTA มีรายได้ต่อ booking ต่ำกว่า Direct แม้จะสร้างรายได้รวมสูง
+
+**7. Analysis Results**
+
+ผลการวิเคราะห์พบว่า สมมติฐานนี้ Partially Supported
+* OTA เป็นช่องทางที่สร้างจำนวน booking สูงที่สุด ประมาณ 23,000 รายการ แสดงให้เห็นว่า OTA มีบทบาทสำคัญในการสร้าง demand และดึงลูกค้าเข้าสู่โรงแรม
+* อย่างไรก็ตาม OTA ไม่ได้มี Net ADR ต่ำที่สุด เพราะช่องทาง Wholesale มี Net ADR ต่ำกว่า OTA แต่ OTA มี Net ADR ต่ำกว่า Direct อย่างชัดเจน
+
+**8. Sub-Hypothesis Findings**
+##### H1.1 OTA มี Gross ADR ใกล้เคียง Direct หรือไม่
+
+ผลลัพธ์พบว่า
+
+| Channel                  | ADR โดยประมาณ                    |
+|--------------------------|-----------------------------------|
+| Direct                   | ≈ 530                             |
+| OTA                      | ≈ 500                             | 
+
+* ความแตกต่างอยู่ที่ประมาณ 5–6% จึงถือว่า Gross ADR ของ OTA ใกล้เคียงกับ Direct
+* **Conclusion:** Supported
+
+##### H1.2 OTA มี Net ADR ต่ำกว่า Direct อย่างน้อย 15% หรือไม่
+  
+ผลลัพธ์พบว่า
+
+| Channel                  | ADR โดยประมาณ                    |
+|--------------------------|-----------------------------------|
+| Direct                   | ≈ 550                             |
+| OTA                      | ≈ 420                             |
+
+* OTA มี Net ADR ต่ำกว่า Direct ประมาณ 23.6% ซึ่งมากกว่าเกณฑ์ 15%
+* **Conclusion:** Supported
+
+##### H1.3 OTA มี booking volume สูง แต่ profit efficiency ต่ำหรือไม่
+* OTA สร้าง Net Revenue รวมสูง เนื่องจากมีจำนวน booking มาก แต่เมื่อพิจารณารายได้สุทธิต่อ booking พบว่า Direct มีประสิทธิภาพดีกว่า
+* **Conclusion:** Supported
+
+**9. Key Insights**
+1. OTA เป็นช่องทางหลักในการสร้าง booking volume
+2. OTA ไม่ได้ขายราคาถูกกว่า Direct มากในระดับ Gross ADR
+3. รายได้สุทธิลดลงหลังหัก commission
+4. Direct มี margin ต่อ booking ดีกว่า OTA
+5. OTA เหมาะกับการสร้าง demand แต่ไม่ควรเป็นช่องทางหลักเพียงอย่างเดียว
+
+**10. Business Implications / Recommendations**
+1. ใช้ OTA เป็น Customer Acquisition Channel
+   * OTA ควรถูกใช้เพื่อดึงลูกค้าใหม่ โดยเฉพาะลูกค้าต่างชาติหรือลูกค้าที่เริ่มค้นหาโรงแรมผ่าน platform เปรียบเทียบราคา
+2. เปลี่ยนลูกค้า OTA ให้กลับมาจองตรง
+   * โรงแรมควรมี strategy เพื่อเปลี่ยนลูกค้า OTA ให้กลับมาจองผ่าน Direct ในครั้งถัดไป เช่น
+      * ส่วนลดสำหรับการจองตรงครั้งถัดไป
+      * Member loyalty program
+      * Free upgrade
+      * Late check-out
+      * Email remarketing หลัง check-out
+3. จำกัด OTA ในช่วง High Demand
+   * ในช่วงที่ demand สูง เช่น weekend, holiday หรือ event period ควรลด allocation บน OTA และผลักดัน booking ผ่าน Direct เพื่อรักษา margin
+
+#### ขั้นตอนการพิสูจน์ Hypothesis 2:
+
+# Logical folder structure
 ```
 project-root/
 │
 ├── data/
-│   ├── ai_generated/
-│   └── other_sources/
+│   ├── dim_calendar.csv
+│   ├── dim_channels.csv
+│   ├── dim_rate_codes.csv
+│   ├── dim_room_inventory.csv
+│   ├── fact_bookings.csv
+│   └── fact_marketing_spend.csv
 │
 ├── notebooks/
 │   └── (Jupyter / Python notebooks)
 │
 ├── dashboards/
-│   └── (dashboard files / configs)
+│   └── Hotel_Performance_Dashboard.twb
 │
 ├── docs/
 │   ├── presentation_slides/
