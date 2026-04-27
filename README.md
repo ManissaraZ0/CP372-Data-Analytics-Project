@@ -814,6 +814,9 @@ Side-by-Side Bar Chart เหมาะสำหรับเปรียบเท
 ```
 project-root/
 │
+├── dashboards/
+│   └── Hotel_Performance_Dashboard.twb
+│
 ├── data/
 │   ├── dim_calendar.csv
 │   ├── dim_channels.csv
@@ -823,10 +826,7 @@ project-root/
 │   └── fact_marketing_spend.csv
 │
 ├── notebooks/
-│   └── (Jupyter / Python notebooks)
-│
-├── dashboards/
-│   └── Hotel_Performance_Dashboard.twb
+│   └── CP372_Project_Data_Overview.ipynb
 │
 ├── docs/
 │   ├── presentation_slides/
