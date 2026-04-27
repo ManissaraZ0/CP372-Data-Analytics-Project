@@ -1,0 +1,7 @@
+rate_code_id,rate_name,is_commissionable
+RT_01,Rack Rate,True
+RT_02,Non-Refundable,True
+RT_03,Seasonal Promo,True
+RT_04,Corporate Flat Rate,False
+RT_05,AAA Discount,True
+RT_06,Member Direct Rate,False
