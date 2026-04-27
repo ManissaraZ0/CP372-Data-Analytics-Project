@@ -1075,7 +1075,7 @@ Provide:
 # Data Dictionary 
 ### TABLE 1: fact_bookings
 
-- จำนวนแถวข้อมูล: **9978**
+- จำนวนแถวข้อมูล: **14141**
 - จำนวนแอททริบิวต์: **10**
 
 | Attribute | คำอธิบาย | Data Type | ช่วงค่าที่ถูกต้อง / ตัวอย่าง |
@@ -1116,7 +1116,7 @@ Provide:
 | default_commission_rate  | อัตราค่าคอมมิชชั่นมาตรฐาน                | Ratio (Continuous)   | 0.0 – 1.0 (เช่น 0.15 สำหรับ 15%)            |
 | contract_owner           | หน่วยงานที่ดูแลรับผิดชอบสัญญา            | Nominal              | Marketing Dept, Revenue Dept, Sales Dept    |
 ### TABLE 4: fact_marketing_spend
-- จำนวนแถวข้อมูล: **600**  
+- จำนวนแถวข้อมูล: **582**  
 - จำนวนแอตทริบิวต์: **6**  
 
 | Attribute     | คำอธิบาย                                   | Data Type            | ช่วงค่าที่ถูกต้อง / ตัวอย่าง                |
