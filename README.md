@@ -171,6 +171,19 @@ COUNTD(IF [Status] = "Cancelled" THEN [Booking Id] END) /
 COUNTD([Booking Id])
 ```
 
+**7. Is Promo**
+   * สำหรับ Mapping เพื่อตรวจสอบ Rate แบบ Promotion
+   * สูตรสำหรับ Tableau Calculated Fields:
+```
+IF [Rate Name] = 'Non-Refundable' OR 
+   [Rate Name] = 'Seasonal Rate' OR 
+   [Rate Name] = 'AAA Discount' OR 
+   [Rate Name] = 'Member Discount' 
+THEN 'Promotion' 
+ELSE 'Non-Promotion' 
+END
+```
+
 ### 3.2.4. Hypothesis Testing & Analysis
 
 #### ขั้นตอนการพิสูจน์ Hypothesis 1: ช่องทาง OTA สร้างยอดจองสูง แต่มี Net ADR ต่ำที่สุด
