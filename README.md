@@ -1531,3 +1531,4 @@ Direct Price = Standard Rate + Free Breakfast + Late Checkout
 
 # Presentation Documents 
 สื่อนำเสนอ: [PDF File](docs/presentation_slides/CP372_Final_Project_151_238_572.pdf)
+คลิปนำเสนอ: [YouTube](https://youtu.be/p19zypdBJqI)
